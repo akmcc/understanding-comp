@@ -1,13 +1,14 @@
 #code from Understanding Computation by Tom Stuart
+require_relative './Simple_Kernel'
 
 class Number < Struct.new(:value)
+
+  include Simple_Kernel
+  
   def to_s #does not take OoOps into account
     value.to_s
   end
 
-  def inspect
-    "<<#{self}>>"
-  end
 
   def reducible?
     false
@@ -19,12 +20,11 @@ class Number < Struct.new(:value)
 end
 
 class Add < Struct.new(:left, :right)  
+
+  include Simple_Kernel
+
   def to_s #does not take OoOps into account
     "#{left} + #{right}"
-  end
-
-  def inspect
-    "<<#{self}>>"
   end
 
   def reducible?
@@ -47,12 +47,11 @@ class Add < Struct.new(:left, :right)
 end
 
 class Multiply < Struct.new(:left, :right)
+  
+  include Simple_Kernel
+
   def to_s #does not take OoOps into account
     "#{left} * #{right}"
-  end
-
-  def inspect
-    "<<#{self}>>"
   end
 
   def reducible?
@@ -75,15 +74,13 @@ class Multiply < Struct.new(:left, :right)
 end
 
 class Boolean < Struct.new(:value)
+
+  include Simple_Kernel
   
   def to_s
     value.to_s
   end
 
-  def inspect
-    "<<#{self}>>"
-  end
-  
   def reducible?
     false
   end
@@ -94,12 +91,11 @@ class Boolean < Struct.new(:value)
 end
 
 class LessThan < Struct.new(:left, :right)
+
+  include Simple_Kernel
+
   def to_s
     "#{left} < #{right}"
-  end
-
-  def inspect
-    "<<#{self}>>"
   end
 
   def reducible?
@@ -122,12 +118,11 @@ class LessThan < Struct.new(:left, :right)
 end
 
 class GreaterThan < Struct.new(:left, :right)
+
+  include Simple_Kernel
+
   def to_s
     "#{left} > #{right}"
-  end
-
-  def inspect
-    "<<#{self}>>"
   end
 
   def reducible?
@@ -150,12 +145,11 @@ class GreaterThan < Struct.new(:left, :right)
 end
 
 class Variable < Struct.new(:name) #only maps variable names onto irreducible values
+
+  include Simple_Kernel
+
   def to_s
     name.to_s
-  end
-
-  def inspect
-    "<<#{self}>>"
   end
 
   def reducible? #can be reduced to the value/expression it represents.
@@ -172,12 +166,11 @@ class Variable < Struct.new(:name) #only maps variable names onto irreducible va
 end
 
 class DoNothing #does not inherit from Struct because it has no attributes and Struct.new does not allow for an empty attribute list
+
+  include Simple_Kernel
+
   def to_s
     "do_nothing"
-  end
-
-  def inspect
-    "<<#{self}>>"
   end
 
   def ==(other_statement)
@@ -194,12 +187,11 @@ class DoNothing #does not inherit from Struct because it has no attributes and S
 end
 
 class Assign < Struct.new(:name, :expression)
+
+  include Simple_Kernel
+
   def to_s
     "#{name} = #{expression}"
-  end
-
-  def inspect
-    "<<#{self}>>"
   end
 
   def reducible?
@@ -220,12 +212,11 @@ class Assign < Struct.new(:name, :expression)
 end
 
 class If < Struct.new(:condition, :consequence, :alternative)
+
+  include Simple_Kernel
+
   def to_s
     "if (#{condition}) { #{consequence} } else { #{alternative} }"
-  end
-
-  def inspect
-    "<<#{self}>>"
   end
 
   def reducible?
@@ -256,12 +247,11 @@ class If < Struct.new(:condition, :consequence, :alternative)
 end
 
 class Sequence < Struct.new(:first, :second)
+
+  include Simple_Kernel
+
   def to_s
     "#{first}; #{second}"
-  end
-
-  def inspect
-    "<<#{self}>>"
   end
 
   def reducible?
@@ -278,18 +268,17 @@ class Sequence < Struct.new(:first, :second)
     end
   end
 
-  def evaluate(environment)
+  def evaluate(environment) #big step operational semantics
     second.evaluate(first.evaluate(environment))
   end
 end
 
 class While < Struct.new(:condition, :body)
+
+  include Simple_Kernel
+
   def to_s
     "while (#{condition}) { #{body} }"
-  end
-
-  def inspect
-    "<<#{self}>>"
   end
 
   def reducible?
