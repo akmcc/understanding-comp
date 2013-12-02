@@ -1,4 +1,10 @@
 #code from Understanding Computation by Tom Stuart
+
+# definitions:
+# operational semantics: explaining what a program means by showing what will happen when it is executed (interpreter)
+# denotational semantics: explaining what a program means by translating it to another representation or language (assumes an established meaning of the new representation) (compiler)
+
+
 require_relative './Simple_Kernel'
 
 class Number < Struct.new(:value)
@@ -16,6 +22,10 @@ class Number < Struct.new(:value)
 
   def evaluate(environment) #big step operational semantics
     self
+  end
+
+  def to_ruby #denotational semantics
+    " -> e { #{value.inspect} }" #not quite understanding this notation just yet, what's with the 'e'? 'e' is an environment variable?
   end
 end
 
@@ -44,6 +54,10 @@ class Add < Struct.new(:left, :right)
   def evaluate(environment) #big step operational semantics
     Number.new(left.evaluate(environment).value + right.evaluate(environment).value)  
   end
+
+  def to_ruby #denotaional semantics
+    "-> e { (#{left.to_ruby}).call(e) + (#{right.to_ruby}).call(e) }"
+  end
 end
 
 class Multiply < Struct.new(:left, :right)
@@ -71,6 +85,10 @@ class Multiply < Struct.new(:left, :right)
   def evaluate(environment) #big step operational semantics
     Number.new(left.evaluate(environment).value * right.evaluate(environment).value)  
   end
+
+  def to_ruby #denotaional semantics
+    "-> e { (#{left.to_ruby}).call(e) * (#{right.to_ruby}).call(e) }"
+  end
 end
 
 class Boolean < Struct.new(:value)
@@ -87,6 +105,10 @@ class Boolean < Struct.new(:value)
 
   def evaluate(environment) #big step operational semantics
     self  
+  end
+
+  def to_ruby #denotational semantics
+    " -> e { #{value.inspect} }"
   end
 end
 
@@ -115,6 +137,10 @@ class LessThan < Struct.new(:left, :right)
   def evaluate(environment) #big step operational semantics
     Boolean.new(left.evaluate(environment).value < right.evaluate(environment).value)  
   end
+
+  def to_ruby #denotaional semantics
+    "-> e { (#{left.to_ruby}).call(e) < (#{right.to_ruby}).call(e) }"
+  end
 end
 
 class GreaterThan < Struct.new(:left, :right)
@@ -142,6 +168,10 @@ class GreaterThan < Struct.new(:left, :right)
   def evaluate(environment) #big step operational semantics
     Boolean.new(left.evaluate(environment).value > right.evaluate(environment).value)  
   end
+
+  def to_ruby #denotaional semantics
+    "-> e { (#{left.to_ruby}).call(e) > (#{right.to_ruby}).call(e) }"
+  end
 end
 
 class Variable < Struct.new(:name) #only maps variable names onto irreducible values
@@ -163,6 +193,10 @@ class Variable < Struct.new(:name) #only maps variable names onto irreducible va
   def evaluate(environment) #big step operational semantics
     environment[name]
   end
+
+  def to_ruby #denotaional semantics
+    "-> e { e[#{name.inspect}] }"
+  end
 end
 
 class DoNothing #does not inherit from Struct because it has no attributes and Struct.new does not allow for an empty attribute list
@@ -183,6 +217,10 @@ class DoNothing #does not inherit from Struct because it has no attributes and S
 
   def evaluate(environment) #big step operational semantics
     environment
+  end
+
+  def to_ruby #denotational semantics
+    '-> e { e }'
   end
 end
 
@@ -208,6 +246,10 @@ class Assign < Struct.new(:name, :expression)
 
   def evaluate(environment) #big step operational semantics
     environment.merge({name => expression.evaluate(environment)})
+  end
+
+  def to_ruby #denotational semantics
+    "-> e { e.merge({ #{name.inspect} => (#{expression.to_ruby}).call(e) }) }"
   end
 end
 
@@ -244,6 +286,13 @@ class If < Struct.new(:condition, :consequence, :alternative)
       alternative.evaluate(environment)
     end
   end
+
+  def to_ruby #denotational semantics
+    "-> e { if (#{condition.to_ruby}).call(e)" +
+      " then (#{consequence.to_ruby}).call(e)" +
+      " else (#{alternative.to_ruby}).call(e)" +
+      " end }"
+  end
 end
 
 class Sequence < Struct.new(:first, :second)
@@ -271,6 +320,10 @@ class Sequence < Struct.new(:first, :second)
   def evaluate(environment) #big step operational semantics
     second.evaluate(first.evaluate(environment))
   end
+
+  def to_ruby #denotational semantics
+    "-> e { (#{second.to_ruby}).call((#{first.to_ruby}).call(e)) }"
+  end
 end
 
 class While < Struct.new(:condition, :body)
@@ -296,6 +349,13 @@ class While < Struct.new(:condition, :body)
     when Boolean.new(false)
       environment
     end
+  end
+
+  def to_ruby #denotational semantics
+    "-> e {" +
+      " while (#{condition.to_ruby}).call(e); e = (#{body.to_ruby}).call(e); end;" +
+      " e" +
+      " }"
   end
 end
 
