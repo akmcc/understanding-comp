@@ -1,8 +1,16 @@
 #code from Tom Stuart's Understanding Computation
+
+#notes:
+# the characters read by finite automata are usually called symbols (rather than characters, as is used below)
+# the rules for moving between states are called transitions
+# collections of rules making up a machine are called transistion functions
+# and NFA with free moves is known as NFA-ε (epsilon is the matematical notation for an empty string)
+# free moves are called ε-transitions
+
+
 require 'set'
 
-class FARule < Struct.new(:state, :character, :next_state)
-
+class FARule < Struct.new(:state, :character, :next_state) 
   def applies_to?(state, character)
     self.state == state && self.character == character
   end
@@ -108,11 +116,3 @@ class NFADesign < Struct.new(:start_state, :accept_states, :rulebook)
     NFA.new(Set[start_state], accept_states, rulebook)
   end
 end
-
-rulebook = NFARulebook.new([FARule.new(1, 'a', 1), FARule.new(1, 'b', 1), FARule.new(1, 'b', 2), FARule.new(2, 'a', 3), FARule.new(2, 'b', 3), FARule.new(3, 'a', 4), FARule.new(3, 'b', 4)]) 
-
-
-
-
-
-
