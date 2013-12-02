@@ -1,3 +1,4 @@
+#code from Tom Stuart's Understanding Computation
 #contains only the rules necessary to parse the string ' while (x < 5) {x = x * 3 }' (spacing matters!)
 
 grammar Simple
