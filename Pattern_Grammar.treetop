@@ -1,3 +1,5 @@
+#code from Tom Stuart's Understanding Computation
+
 grammar Pattern
   
   rule choose
