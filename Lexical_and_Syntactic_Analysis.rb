@@ -61,3 +61,35 @@ class LexicalAnalyzer < Struct.new(:string)
     match.post_match.lstrip #lstrip removes only the leading white spaces
   end
 end
+
+
+
+# SYNTACTIC GRAMMAR
+#
+# this is a context-free grammar which means it doesn't specify the context in which each peice may appear
+# for example: an assignment always consists of a variable name, an equal sign, and an expression REGARDLESS of other tokens around it.
+#
+# <statement>   ::= <while> | <assign>
+# <while>       ::= 'w' '(' <expression> ')' '{' <statement> '}'
+# <assign>      ::= 'v' '=' <expression>
+# <expression>  ::= <less-than>
+# <less-than>   ::= <multiply> '<' <less-than> | <multiply>
+# <multiply>    ::= <term> '*' <multiply> | <term>
+# <term>        ::= 'n' | 'v'
+#
+#
+# can translate these grammar rules into PDA rules
+#
+# example:
+#
+# irb(main):004:0> symbol_rules = [\
+# irb(main):005:1* PDARule.new(2, nil, 2, 'S', ['W']),\
+# irb(main):007:1* PDARule.new(2, nil, 2, 'W', ['w', '(', 'E', ')', '{', 'S', '}']),\
+# irb(main):008:1* PDARule.new(2, nil, 2, 'A', ['v', '=', 'E']),\
+# irb(main):009:1* PDARule.new(2, nil, 2, 'E', ['L']),\
+# irb(main):010:1* PDARule.new(2, nil, 2, 'L', ['M', '<', 'L']),\
+# irb(main):011:1* PDARule.new(2, nil, 2, 'L', ['M']),\
+# irb(main):012:1* PDARule.new(2, nil, 2, 'M', ['T', '*', 'M']),\
+# irb(main):013:1* PDARule.new(2, nil, 2, 'M', ['T']),\
+# irb(main):014:1* PDARule.new(2, nil, 2, 'T', ['n']),\
+# irb(main):015:1* PDARule.new(2, nil, 2, 'T', ['v'])]
