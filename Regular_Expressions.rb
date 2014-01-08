@@ -119,7 +119,7 @@ class Repeat < Struct.new(:pattern)
     2
   end
 
-  def to_nfa_design #should add free move from accept states to original start state so that it can accept more than one, and create a new start state, which is also an accept state, with a free move to the old start state (not quite comprehending this part yet)
+  def to_nfa_design #should add free move from accept states to original start state so that it can accept more than one, and create a new start state, which is also an accept state, with a free move to the old start state 
     pattern_nfa_design = pattern.to_nfa_design
     start_state = Object.new
     accept_states = pattern_nfa_design.accept_states + [start_state]

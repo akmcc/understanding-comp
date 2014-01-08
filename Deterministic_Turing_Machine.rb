@@ -74,7 +74,3 @@ class DTM < Struct.new(:current_config, :accept_states, :rulebook)
     !accepting? && !rulebook.applies_to?(current_config)
   end
 end
-
-
-
-rulebook = DTMRulebook.new([TMRule.new(1, '0', 2, '1', :right), TMRule.new(1, '1', 1, '0', :left),TMRule.new(1, '_', 2, '1', :right),TMRule.new(2, '0', 2, '0', :right),TMRule.new(2, '1', 2, '1', :right),TMRule.new(2, '_', 3, '_', :left)])
